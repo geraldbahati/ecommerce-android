@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">EcommerceApp</string>
+    <string name="action_settings">Settings</string>
+    <string name="skip">SKIP</string>
+    <string name="open_furniture_title">Open Furniture</string>
+    <string name="open_furniture_desc">
+        Use filler text that has been edited for length an format to match on a the characteristics of real content as closely as possible.
+    </string>
+    <string name="relaxing_furniture">Relaxing Furniture</string>
+    <string name="relaxing_furniture_desc">
+        Use filler text where helps your design process, but use real content if you’ve got it as long as it does distract and slow down your design process.
+    </string>
+    <string name="home_furniture">Home Furniture</string>
+    <string name="home_furniture_desc">
+        Design is an evolutionary process, and filler text is just one tool in your progress-pushing arsenal.
+    </string>
+    <string name="login_title">Let’s Sign You In.</string>
+    <string name="login_desc">Welcome back, you’ve been missed!</string>
+    <string name="register_login_toggle">Don’t have an Account?</string>
+    <string name="register_title">Create an Account</string>
+    <string name="regiser_subtitle">Enter your Details Informations</string>
+</resources>
