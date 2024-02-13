@@ -66,6 +66,9 @@ fun RegisterScreen(
     val scrollState = rememberScrollState()
     val state = registerViewModel.state
     val (emailFocusRequester, passwordFocusRequester, firstNameFocusRequester, lastNameFocusRequester) = FocusRequester.createRefs()
+    registerViewModel.onEvent(
+        RegisterEvent.OnSetNavigator(navigator)
+    )
 
     Scaffold (
         modifier = Modifier
@@ -87,7 +90,9 @@ fun RegisterScreen(
                 // skip button
                 Box(modifier = Modifier
                     .clickable {
-                        // navigate to next screen
+                        registerViewModel.onEvent(
+                            RegisterEvent.OnNavigateToHome
+                        )
                     }
                 ) {
                     Text(
@@ -282,7 +287,9 @@ fun RegisterScreen(
 
                             color = MaterialTheme.colorScheme.secondary,
                             modifier = Modifier.clickable {
-                                // navigator.navigate(Routes.TERMS_AND_CONDITIONS)
+                                registerViewModel.onEvent(
+                                    RegisterEvent.OnNavigateToTermsAndConditions
+                                )
                             }
                         )
                     }
@@ -301,10 +308,6 @@ fun RegisterScreen(
                             registerViewModel.onEvent(
                                 RegisterEvent.OnRegister
                             )
-
-                            if(state.isRegister) {
-                                // navigate to next screen
-                            }
                         }
                     )
                 }
@@ -331,7 +334,9 @@ fun RegisterScreen(
                         modifier = Modifier.clickable {
                             focusManager.clearFocus()
                             keyboardController?.hide()
-                            navigator.navigate(Routes.LOGIN)
+                            registerViewModel.onEvent(
+                                RegisterEvent.OnNavigateToLogin
+                            )
                         }
                     )
                 }

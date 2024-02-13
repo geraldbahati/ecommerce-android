@@ -61,6 +61,7 @@ class LoginViewModel @Inject constructor(
             is LoginEvent.OnLogin -> {
                 if (validated()) {
                     login()
+//                    state.navigator?.navigate(Routes.HOME)
                 }
             }
         }

@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.ecommerceapp.config.Routes
 import com.example.ecommerceapp.features.auth.domain.repository.UserRepository
 import com.example.ecommerceapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +23,10 @@ class RegisterViewModel @Inject constructor(
 
     fun onEvent(event: RegisterEvent){
         when(event){
+            is RegisterEvent.OnSetNavigator -> {
+                state = state.copy(navigator = event.navigator)
+            }
+
             is RegisterEvent.OnEmailChange -> {
                 state = state.copy(
                     email = event.email,
@@ -62,9 +67,19 @@ class RegisterViewModel @Inject constructor(
                     register()
                 }
             }
-            is RegisterEvent.OnNavigateBack ->{
-                state = state.copy(isRegister = false)
+
+            is RegisterEvent.OnNavigateToLogin -> {
+                 state.navigator?.popBackStack()
             }
+
+            is RegisterEvent.OnNavigateToHome -> {
+//                state.navigator?.navigate(Routes.HOME)
+            }
+
+            is RegisterEvent.OnNavigateToTermsAndConditions -> {
+//                state.navigator?.navigate(Routes.TERMS_AND_CONDITIONS)
+            }
+
             is RegisterEvent.OnTermsAndConditionsChange -> {
                 state = state.copy(isTermsAndConditionsAccepted = event.isTermsAndConditionsChecked)
             }
