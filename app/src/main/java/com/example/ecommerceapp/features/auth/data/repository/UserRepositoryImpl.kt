@@ -1,10 +1,13 @@
 package com.example.ecommerceapp.features.auth.data.repository
 
 import com.example.ecommerceapp.features.auth.data.Mapper.toUser
+import com.example.ecommerceapp.features.auth.data.local.TokenStorage
 import com.example.ecommerceapp.features.auth.data.local.UserDatabase
 import com.example.ecommerceapp.features.auth.data.remote.UserApi
 import com.example.ecommerceapp.features.auth.data.remote.dto.LoginBodyRequest
 import com.example.ecommerceapp.features.auth.data.remote.dto.RegisterRequestBody
+import com.example.ecommerceapp.features.auth.domain.model.ResponseMessage
+import com.example.ecommerceapp.features.auth.domain.model.Tokens
 import com.example.ecommerceapp.features.auth.domain.model.User
 import com.example.ecommerceapp.features.auth.domain.repository.UserRepository
 import com.example.ecommerceapp.util.Resource
@@ -17,10 +20,11 @@ import javax.inject.Singleton
 @Singleton
 class UserRepositoryImpl @Inject constructor(
     private val api: UserApi,
-    private val db: UserDatabase
+    db: UserDatabase,
 ) : UserRepository {
 
     private val dao = db.dao
+    private val tokenStorage = TokenStorage
     override suspend fun createUser(
         email: String,
         password: String,
@@ -39,11 +43,22 @@ class UserRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun loginUser(email: String, password: String): Resource<Nothing> {
+    override suspend fun loginUser(email: String, password: String): Resource<Tokens> {
         val requestBody = LoginBodyRequest(email, password)
         val response = performRequest { api.loginUser(requestBody) }
         return if (response.isSuccessful) {
-            Resource.Success(null)
+            val tokens = response.body()!!
+            Resource.Success(Tokens(tokens.accessToken, tokens.refreshToken))
+        } else {
+            Resource.Error(response.message())
+        }
+    }
+
+    override suspend fun resetPassword(accessToken: String,email: String): Resource<ResponseMessage> {
+        val response = performRequest { api.resetPassword(accessToken,email) }
+        return if (response.isSuccessful) {
+            val message = response.body()!!
+            Resource.Success(ResponseMessage(message.message))
         } else {
             Resource.Error(response.message())
         }

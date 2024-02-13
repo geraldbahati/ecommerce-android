@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ecommerceapp.config.Routes
 import com.example.ecommerceapp.features.auth.domain.repository.UserRepository
+import com.example.ecommerceapp.features.auth.domain.usecase.LoginUseCase
 import com.example.ecommerceapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val userRepository: UserRepository
+//    private val userRepository: UserRepository
+    private val loginUseCase: LoginUseCase
 ) : ViewModel() {
     var state by mutableStateOf(LoginState())
 
@@ -51,7 +53,7 @@ class LoginViewModel @Inject constructor(
             }
 
             is LoginEvent.OnNavigateToForgotPassword -> {
-//                state.navigator?.navigate(Routes.FORGOT_PASSWORD)
+                state.navigator?.navigate(Routes.FORGET_PASSWORD)
             }
 
             is LoginEvent.OnNavigateToHome -> {
@@ -91,7 +93,7 @@ class LoginViewModel @Inject constructor(
         loginJob?.cancel()
         loginJob = viewModelScope.launch {
             state = state.copy(isLoading = true)
-            val result = userRepository.loginUser(state.email.trim(), state.password.trim())
+            val result = loginUseCase(state.email.trim(), state.password.trim())
             state = state.copy(isLoading = false)
             state = when (result) {
                 is Resource.Success -> {

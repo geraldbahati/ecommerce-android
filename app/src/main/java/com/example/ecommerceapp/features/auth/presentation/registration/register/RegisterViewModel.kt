@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ecommerceapp.config.Routes
 import com.example.ecommerceapp.features.auth.domain.repository.UserRepository
+import com.example.ecommerceapp.features.auth.domain.usecase.RegisterUseCase
 import com.example.ecommerceapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -15,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val repository: UserRepository
+    private val registerUseCase: RegisterUseCase
 ) : ViewModel(){
     var state by mutableStateOf(RegisterState())
 
@@ -93,7 +94,7 @@ class RegisterViewModel @Inject constructor(
         registerJob?.cancel()
         registerJob = viewModelScope.launch {
             state = state.copy(isLoading = true)
-            val result = repository.createUser(
+            val result = registerUseCase(
                 email=  state.email.trim(),
                 password= state.password.trim(),
                 firstName= state.firstName.trim(),

@@ -1,13 +1,17 @@
 package com.example.ecommerceapp.features.auth.di
 
 import android.app.Application
+import android.content.Context
 import androidx.room.Room
 import com.example.ecommerceapp.config.Constants
 import com.example.ecommerceapp.features.auth.data.local.UserDatabase
 import com.example.ecommerceapp.features.auth.data.remote.UserApi
+import com.example.ecommerceapp.features.auth.domain.usecase.GetAccessTokenUseCase
+import com.example.ecommerceapp.features.auth.domain.usecase.SaveTokenUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -41,5 +45,21 @@ object AuthModule {
             UserDatabase::class.java,
             Constants.DATABASE_NAME
         ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSaveTokenUseCase(
+        @ApplicationContext context: Context
+    ): SaveTokenUseCase {
+        return SaveTokenUseCase(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetAccessTokenUseCase(
+        @ApplicationContext context: Context
+    ): GetAccessTokenUseCase {
+        return GetAccessTokenUseCase(context)
     }
 }
