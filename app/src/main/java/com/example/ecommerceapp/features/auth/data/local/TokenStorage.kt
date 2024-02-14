@@ -2,6 +2,7 @@ package com.example.ecommerceapp.features.auth.data.local
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
@@ -25,20 +26,31 @@ object TokenStorage {
     }
 
     fun saveTokens(context: Context, accessToken: String, refreshToken: String) {
+        Log.i("TokenStorage", "saving tokens...")
         val sharedPreferences = getSharedPreferences(context)
         val editor = sharedPreferences.edit()
         editor.putString(ACCESS_TOKEN_KEY, accessToken)
         editor.putString(REFRESH_TOKEN_KEY, refreshToken)
         editor.apply()
+        Log.i("TokenStorage", "tokens saved")
     }
 
     fun getAccessToken(context: Context): String? {
         val sharedPreferences = getSharedPreferences(context)
+        Log.i("TokenStorage", "getting access token...")
         return sharedPreferences.getString(ACCESS_TOKEN_KEY, null)
     }
 
     fun getRefreshToken(context: Context): String? {
         val sharedPreferences = getSharedPreferences(context)
+        Log.i("TokenStorage", "getting refresh token...")
         return sharedPreferences.getString(REFRESH_TOKEN_KEY, null)
+    }
+
+    fun editAccessToken(context: Context, accessToken: String) {
+        val sharedPreferences = getSharedPreferences(context)
+        val editor = sharedPreferences.edit()
+        editor.putString(ACCESS_TOKEN_KEY, accessToken)
+        editor.apply()
     }
 }

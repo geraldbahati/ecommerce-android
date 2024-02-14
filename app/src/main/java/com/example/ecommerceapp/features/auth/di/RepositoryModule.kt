@@ -1,5 +1,6 @@
 package com.example.ecommerceapp.features.auth.di
 
+import com.example.ecommerceapp.features.auth.data.local.TokenStorage
 import com.example.ecommerceapp.features.auth.data.repository.UserRepositoryImpl
 import com.example.ecommerceapp.features.auth.domain.repository.UserRepository
 import dagger.Binds
@@ -15,4 +16,5 @@ abstract class RepositoryModule {
     abstract fun bindUserRepository(
         userRepositoryImpl: UserRepositoryImpl
     ): UserRepository
+
 }

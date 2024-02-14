@@ -6,4 +6,6 @@ object Constants {
     const val SHARED_PREFERENCES_NAME = "ecommerce_shared_pref"
     const val SPLASH_SCREEN_DURATION = 3000L
     const val USER_TABLE_NAME = "users"
+    const val CATEGORY_TABLE_NAME = "categories"
+    const val PRODUCT_TABLE_NAME = "products"
 }
