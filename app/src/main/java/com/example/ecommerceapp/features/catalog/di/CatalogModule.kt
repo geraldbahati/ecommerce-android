@@ -1,14 +1,14 @@
-package com.example.ecommerceapp.features.auth.di
+package com.example.ecommerceapp.features.catalog.di
 
-import android.content.Context
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.WorkerFactory
+import com.example.ecommerceapp.config.AppDatabase
 import com.example.ecommerceapp.config.Constants
-import com.example.ecommerceapp.features.auth.data.remote.UserApi
-import com.example.ecommerceapp.config.auth.GetAccessTokenUseCase
-import com.example.ecommerceapp.config.auth.SaveTokenUseCase
+import com.example.ecommerceapp.features.catalog.data.local.CategoryDao
+import com.example.ecommerceapp.features.catalog.data.remote.CategoryApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -19,11 +19,11 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AuthModule {
+object CatalogModule {
 
     @Provides
     @Singleton
-    fun provideUserApi(): UserApi {
+    fun provideCategoryApi(): CategoryApi {
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create())
@@ -34,4 +34,8 @@ object AuthModule {
             .create()
     }
 
+    @Provides
+    fun provideCategoryDao(appDatabase: AppDatabase): CategoryDao {
+        return appDatabase.categoryDao
+    }
 }

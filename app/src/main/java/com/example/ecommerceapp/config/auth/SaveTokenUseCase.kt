@@ -1,7 +1,7 @@
-package com.example.ecommerceapp.features.auth.domain.usecase
+package com.example.ecommerceapp.config.auth
 
 import android.content.Context
-import com.example.ecommerceapp.features.auth.data.local.TokenStorage
+import com.example.ecommerceapp.config.auth.TokenStorage
 import javax.inject.Inject
 
 class SaveTokenUseCase @Inject constructor(

@@ -1,5 +1,6 @@
 package com.example.ecommerceapp.features.auth.domain.usecase
 
+import com.example.ecommerceapp.config.auth.GetAccessTokenUseCase
 import com.example.ecommerceapp.features.auth.domain.model.ResponseMessage
 import com.example.ecommerceapp.features.auth.domain.repository.UserRepository
 import com.example.ecommerceapp.util.Resource

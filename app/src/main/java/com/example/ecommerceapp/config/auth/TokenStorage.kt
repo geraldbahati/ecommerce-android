@@ -1,4 +1,4 @@
-package com.example.ecommerceapp.features.auth.data.local
+package com.example.ecommerceapp.config.auth
 
 import android.content.Context
 import android.content.SharedPreferences

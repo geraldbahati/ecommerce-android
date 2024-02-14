@@ -1,8 +1,7 @@
 package com.example.ecommerceapp.features.auth.data.repository
 
+import com.example.ecommerceapp.config.AppDatabase
 import com.example.ecommerceapp.features.auth.data.Mapper.toUser
-import com.example.ecommerceapp.features.auth.data.local.TokenStorage
-import com.example.ecommerceapp.features.auth.data.local.UserDatabase
 import com.example.ecommerceapp.features.auth.data.remote.UserApi
 import com.example.ecommerceapp.features.auth.data.remote.dto.LoginBodyRequest
 import com.example.ecommerceapp.features.auth.data.remote.dto.RegisterRequestBody
@@ -20,11 +19,10 @@ import javax.inject.Singleton
 @Singleton
 class UserRepositoryImpl @Inject constructor(
     private val api: UserApi,
-    db: UserDatabase,
+    db: AppDatabase,
 ) : UserRepository {
 
-    private val dao = db.dao
-    private val tokenStorage = TokenStorage
+    private val dao = db.userDao
     override suspend fun createUser(
         email: String,
         password: String,
@@ -36,6 +34,7 @@ class UserRepositoryImpl @Inject constructor(
         val response = performRequest { api.createUser(requestBody) }
         if (response.isSuccessful) {
             val user = response.body()!!.toUser()
+            dao.clearUser()
             dao.insertUser(user)
             return Resource.Success(user.toUser())
         }
