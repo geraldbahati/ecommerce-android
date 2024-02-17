@@ -86,13 +86,17 @@ fun LandingPager(
                 .padding(16.dp)
                 .clickable {
                     scope.launch {
+                        navigator.navigate(
+                            route = Routes.HOME,
+                        )
+
                         pagerState.scrollToPage(pageDetails.size - 1)
                     }
                 }
             ) {
                 Text(
                     text = stringResource(id = R.string.skip),
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.titleMedium
                 )
             }

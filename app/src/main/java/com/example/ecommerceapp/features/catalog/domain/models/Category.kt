@@ -1,6 +1,8 @@
 package com.example.ecommerceapp.features.catalog.domain.models
 
+import androidx.compose.runtime.Immutable
 
+@Immutable
 data class Category (
     val id: String,
     val name: String,

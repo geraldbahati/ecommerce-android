@@ -40,6 +40,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.config.Routes
 import com.example.ecommerceapp.features.auth.presentation.registration.register.RegisterEvent
+import com.example.ecommerceapp.features.catalog.presentation.home.NewsCard
 import com.example.ecommerceapp.widgets.CustomButton
 import com.example.ecommerceapp.widgets.CustomOutlineTextField
 import com.ramcosta.composedestinations.annotation.Destination
@@ -217,6 +218,21 @@ fun LoginScreen(
                             )
                         }
                     )
+
+                    Spacer(modifier = Modifier.padding(8.dp))
+
+
+                    NewsCard(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp),
+                        type = "type",
+                        title = "title",
+                        description = "description",
+                        imageUrl = "imageUrl",
+                        onClick = {}
+                    )
+
                 }
 
                 // register toggle statement

@@ -13,7 +13,8 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.ecommerceapp.config.Constants
-import com.example.ecommerceapp.features.auth.presentation.NavGraphs
+import com.example.ecommerceapp.features.NavGraphs
+
 import com.example.ecommerceapp.features.catalog.data.sync.DataSyncWorker
 import com.example.ecommerceapp.ui.theme.EcommerceAppTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -42,7 +43,7 @@ class MainActivity : ComponentActivity() {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val syncWorkRequest = PeriodicWorkRequestBuilder<DataSyncWorker>(1, TimeUnit.MINUTES)
+        val syncWorkRequest = PeriodicWorkRequestBuilder<DataSyncWorker>(15, TimeUnit.MINUTES)
             .setConstraints(constraints)
             .build()
 

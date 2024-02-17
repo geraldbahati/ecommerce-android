@@ -58,7 +58,7 @@ private val LightColorScheme = lightColorScheme(
     inversePrimary = Grey99,
 
     secondary = Grey10,
-    onSecondary = Grey90,
+    onSecondary = Grey95,
     secondaryContainer = Grey90,
     onSecondaryContainer = Grey10,
 
@@ -87,7 +87,7 @@ private val LightColorScheme = lightColorScheme(
 fun EcommerceAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = false,
+    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
