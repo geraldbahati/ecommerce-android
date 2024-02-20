@@ -18,9 +18,10 @@ interface CategoryDao {
 
     @Query(
         """
-            SELECT * 
-            FROM ${Constants.CATEGORY_TABLE_NAME}
-            WHERE LOWER(name) LIKE '%' || LOWER(:query) || '%'
+            SELECT c.* 
+            FROM ${Constants.CATEGORY_TABLE_NAME} AS c
+            JOIN ${Constants.CATEGORY_TABLE_NAME_FTS} AS fts ON c.rowid = fts.rowid
+            WHERE categories_fts MATCH :query
         """
     )
     suspend fun searchCategories(query: String): List<CategoryEntity>

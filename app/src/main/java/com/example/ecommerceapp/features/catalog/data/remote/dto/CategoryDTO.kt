@@ -30,10 +30,4 @@ data class Description (
     @field:Json(name = "Valid")val valid: Boolean
 )
 
-data class LastUpdated (
-    @field:Json(name = "Time")val time: String,
-    @field:Json(name = "Valid")val valid: Boolean
-)
-
-
 fun GetCategoriesRequest.toCategoryEntityList() = categories.map { it.toCategoryEntity() }

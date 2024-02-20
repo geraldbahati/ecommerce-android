@@ -1,7 +1,9 @@
 package com.example.ecommerceapp.features.catalog.di
 
 import com.example.ecommerceapp.features.catalog.data.repository.CategoryRepositoryImpl
+import com.example.ecommerceapp.features.catalog.data.repository.ProductRepositoryImpl
 import com.example.ecommerceapp.features.catalog.domain.repository.CategoryRepository
+import com.example.ecommerceapp.features.catalog.domain.repository.ProductRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,5 +17,10 @@ abstract class RepositoryModule {
     abstract fun bindCategoryRepository(
         categoryRepositoryImpl: CategoryRepositoryImpl
     ): CategoryRepository
+
+    @Binds
+    abstract fun bindProductRepository(
+        productRepositoryImpl: ProductRepositoryImpl
+    ): ProductRepository
 
 }

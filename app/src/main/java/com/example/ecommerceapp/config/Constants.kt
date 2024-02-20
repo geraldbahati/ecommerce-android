@@ -11,5 +11,7 @@ object Constants {
     const val USER_TABLE_NAME = "users"
     const val CATEGORY_TABLE_NAME = "categories"
     const val PRODUCT_TABLE_NAME = "products"
+    const val PRODUCT_TABLE_NAME_FTS = "products_fts"
+    const val CATEGORY_TABLE_NAME_FTS = "categories_fts"
 
 }

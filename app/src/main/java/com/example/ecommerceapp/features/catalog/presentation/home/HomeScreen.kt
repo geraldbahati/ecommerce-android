@@ -48,9 +48,9 @@ fun HomeScreen(
                  Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 20.dp, horizontal = 20.dp),
+                            .padding(start = 20.dp, top = 10.dp, end = 10.dp, bottom = 10.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.Bottom
+                        verticalAlignment = Alignment.CenterVertically
                  ) {
                      Text(
                          modifier = Modifier.weight(1f),
@@ -63,6 +63,11 @@ fun HomeScreen(
                      Icon(
                          painter = painterResource(id = R.drawable.ic_cart),
                          contentDescription = "Cart",
+                         modifier = Modifier
+                             .clickable {
+                                 homeViewModel.onEvent(HomeEvent.OnNavigateToCart)
+                             }
+                             .padding(10.dp),
                          tint = MaterialTheme.colorScheme.onBackground
                         )
                  }
