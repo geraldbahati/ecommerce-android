@@ -1,11 +1,11 @@
 package com.example.ecommerceapp.features.auth.data.repository
 
+import com.example.ecommerceapp.database.AppDatabase
 import com.example.ecommerceapp.features.auth.data.Mapper.toUser
-import com.example.ecommerceapp.features.auth.data.local.TokenStorage
-import com.example.ecommerceapp.features.auth.data.local.UserDatabase
 import com.example.ecommerceapp.features.auth.data.remote.UserApi
 import com.example.ecommerceapp.features.auth.data.remote.dto.LoginBodyRequest
 import com.example.ecommerceapp.features.auth.data.remote.dto.RegisterRequestBody
+import com.example.ecommerceapp.features.auth.data.remote.dto.ResetPasswordBody
 import com.example.ecommerceapp.features.auth.domain.model.ResponseMessage
 import com.example.ecommerceapp.features.auth.domain.model.Tokens
 import com.example.ecommerceapp.features.auth.domain.model.User
@@ -20,11 +20,10 @@ import javax.inject.Singleton
 @Singleton
 class UserRepositoryImpl @Inject constructor(
     private val api: UserApi,
-    db: UserDatabase,
+    db: AppDatabase,
 ) : UserRepository {
 
-    private val dao = db.dao
-    private val tokenStorage = TokenStorage
+    private val dao = db.userDao
     override suspend fun createUser(
         email: String,
         password: String,
@@ -36,6 +35,7 @@ class UserRepositoryImpl @Inject constructor(
         val response = performRequest { api.createUser(requestBody) }
         if (response.isSuccessful) {
             val user = response.body()!!.toUser()
+            dao.clearUser()
             dao.insertUser(user)
             return Resource.Success(user.toUser())
         }
@@ -55,7 +55,8 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun resetPassword(accessToken: String,email: String): Resource<ResponseMessage> {
-        val response = performRequest { api.resetPassword(accessToken,email) }
+        val requestBody = ResetPasswordBody(email)
+        val response = performRequest { api.resetPassword(accessToken,requestBody) }
         return if (response.isSuccessful) {
             val message = response.body()!!
             Resource.Success(ResponseMessage(message.message))

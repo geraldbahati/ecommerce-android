@@ -70,7 +70,7 @@ class RegisterViewModel @Inject constructor(
             }
 
             is RegisterEvent.OnNavigateToLogin -> {
-                 state.navigator?.popBackStack()
+                 state.navigator?.navigateUp()
             }
 
             is RegisterEvent.OnNavigateToHome -> {

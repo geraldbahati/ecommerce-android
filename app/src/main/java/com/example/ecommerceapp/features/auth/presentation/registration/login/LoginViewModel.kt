@@ -16,7 +16,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-//    private val userRepository: UserRepository
     private val loginUseCase: LoginUseCase
 ) : ViewModel() {
     var state by mutableStateOf(LoginState())

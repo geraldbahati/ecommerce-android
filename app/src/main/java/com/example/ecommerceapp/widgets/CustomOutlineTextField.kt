@@ -79,7 +79,7 @@ fun CustomOutlineTextField(
             label = { Text(text = label)},
             placeholder = {
                 Text(text = placeHolder, color = Color.Gray.copy(alpha = placeholderOpacity))
-                          },
+            },
             interactionSource = interactionSource,
             isError = errorMessage != null,
             visualTransformation = if (!isPasswordVisible) {
