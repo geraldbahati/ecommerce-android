@@ -1,4 +1,4 @@
-package com.example.ecommerceapp.config
+package com.example.ecommerceapp.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
@@ -19,7 +19,7 @@ import com.example.ecommerceapp.features.catalog.data.local.ProductDao
         ProductFtsEntity::class,
         CategoryFtsEntity::class
    ],
-    version = 2
+    version = 3
 )
 abstract class AppDatabase : RoomDatabase(){
     abstract val userDao: UserDao

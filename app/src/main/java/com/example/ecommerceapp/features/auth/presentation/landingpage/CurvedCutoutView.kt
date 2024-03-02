@@ -18,7 +18,8 @@ fun CurvedCutoutView(
         modifier = modifier
         ) {
         val width = size.width
-        val height = 471.dp.toPx()
+        val height = size.height
+//        val height = 471.dp.toPx()
 
         val point1 = Offset(x = 0f, y = 0f)
         val point2 = Offset(0f, height)

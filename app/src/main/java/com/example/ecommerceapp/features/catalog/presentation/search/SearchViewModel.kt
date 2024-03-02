@@ -29,6 +29,14 @@ class SearchViewModel @Inject constructor(
                 _searchState.value = _searchState.value.copy(query = event.query)
                 debounceSearch(event.query)
             }
+
+            is SearchEvent.OnSearchCategory -> {
+                searchJob?.cancel()
+                search(event.query)
+            }
+            is SearchEvent.OnToggleSearch -> {
+                _searchState.value = _searchState.value.copy(isSearching = event.isSearching)
+            }
         }
     }
 

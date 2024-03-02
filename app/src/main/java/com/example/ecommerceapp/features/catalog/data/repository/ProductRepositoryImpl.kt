@@ -1,6 +1,6 @@
 package com.example.ecommerceapp.features.catalog.data.repository
 
-import com.example.ecommerceapp.config.AppDatabase
+import com.example.ecommerceapp.database.AppDatabase
 import com.example.ecommerceapp.features.catalog.data.entity.toProductList
 import com.example.ecommerceapp.features.catalog.data.remote.ProductApi
 import com.example.ecommerceapp.features.catalog.data.remote.dto.toProductEntityList

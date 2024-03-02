@@ -1,8 +1,6 @@
 package com.example.ecommerceapp.features.catalog.di
 
-import androidx.hilt.work.HiltWorkerFactory
-import androidx.work.WorkerFactory
-import com.example.ecommerceapp.config.AppDatabase
+import com.example.ecommerceapp.database.AppDatabase
 import com.example.ecommerceapp.config.Constants
 import com.example.ecommerceapp.features.catalog.data.local.CategoryDao
 import com.example.ecommerceapp.features.catalog.data.local.ProductDao

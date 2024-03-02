@@ -19,11 +19,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.ecommerceapp.R
+import com.example.ecommerceapp.ui.theme.LocalSpacing
 
 @Composable
 fun LandingScreen(
@@ -32,21 +34,26 @@ fun LandingScreen(
     description: String,
     image: Int
 ) {
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val screenWidth = configuration.screenWidthDp.dp
+    val standardPadding = screenWidth * 0.072f
+
     // Screen content
     Column (
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .padding(30.dp),
+            .padding(standardPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(screenHeight * 0.16f))
 
         // image container
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(414.dp),
+                .height(screenHeight * 0.462f),
             contentAlignment = Alignment.Center
         )
         {
@@ -62,7 +69,7 @@ fun LandingScreen(
             style = MaterialTheme.typography.titleLarge,
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(screenHeight * 0.017f))
 
         // description
         Text(

@@ -21,4 +21,12 @@
     <string name="regiser_subtitle">Enter your Details Informations</string>
     <string name="forget_password_title">Set your Password?</string>
     <string name="forget_password_subtitile">Please Enter your eMail Address. Your will Receive a link to Create a new Password via email.</string>
+    <string name="placeholder_search">Search Category</string>
+    <string name="clear_search">Clear button</string>
+    <string name="search_icon">Search query</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="email_label">Email Address</string>
+    <string name="email_placeholder">example@domain.com</string>
+    <string name="password_label">Password</string>
 </resources>

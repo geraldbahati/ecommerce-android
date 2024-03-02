@@ -4,6 +4,7 @@ import com.example.ecommerceapp.features.catalog.domain.models.Category
 
 data class SearchState(
     val isLoading: Boolean = false,
+    val isSearching: Boolean = false,
 
     val loadedCategories: List<Category> = emptyList(),
     val query: String = "",

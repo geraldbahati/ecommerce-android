@@ -5,7 +5,7 @@ import android.content.Context
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.room.Room
 import androidx.work.WorkerFactory
-import com.example.ecommerceapp.config.AppDatabase
+import com.example.ecommerceapp.database.AppDatabase
 import com.example.ecommerceapp.config.Constants
 import com.example.ecommerceapp.config.auth.GetAccessTokenUseCase
 import com.example.ecommerceapp.config.auth.SaveTokenUseCase
@@ -26,7 +26,9 @@ object AppModule {
             app,
             AppDatabase::class.java,
             Constants.DATABASE_NAME
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides

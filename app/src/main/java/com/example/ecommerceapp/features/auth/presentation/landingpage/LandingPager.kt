@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
@@ -18,11 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.ecommerceapp.R
-import com.example.ecommerceapp.config.Constants
 import com.example.ecommerceapp.config.Routes
+import com.example.ecommerceapp.ui.theme.LocalSpacing
 import com.example.ecommerceapp.widgets.CustomButton
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -34,6 +37,10 @@ import kotlinx.coroutines.launch
 fun LandingPager(
      navigator: DestinationsNavigator
 ) {
+    val spacing = LocalSpacing.current
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+
     val pageDetails = listOf(
         LandingPageDetails(
             title = stringResource(id = R.string.open_furniture_title),
@@ -57,11 +64,14 @@ fun LandingPager(
     val pagerState = rememberPagerState(pageCount = {
         pageDetails.size
     })
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+    ) {
         // Custom curve cutout
         CurvedCutoutView(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .height(screenHeight * 0.53f),
             color = MaterialTheme.colorScheme.primary
         )
 
@@ -78,16 +88,17 @@ fun LandingPager(
 
         Row(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .statusBarsPadding(),
             horizontalArrangement = Arrangement.End
         ) {
             // skip button
             Box(modifier = Modifier
-                .padding(16.dp)
+                .padding(spacing.medium)
                 .clickable {
                     scope.launch {
                         navigator.navigate(
-                            route = Routes.HOME,
+                            route = Routes.SEARCH_CATEGORY,
                         )
 
                         pagerState.scrollToPage(pageDetails.size - 1)
@@ -104,7 +115,7 @@ fun LandingPager(
         RevealDotIndicator(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .offset(y = (-120).dp),
+                .offset(y = -(screenHeight * 0.134f)),
             count = pageDetails.size,
             pagerState = pagerState,
             activeColor = MaterialTheme.colorScheme.secondary,
@@ -114,8 +125,9 @@ fun LandingPager(
             CustomButton(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(16.dp)
-                    .height(50.dp),
+                    .padding(spacing.medium)
+                    .navigationBarsPadding()
+                    .height(54.dp),
                 title = "Get Started",
                 onClick = {
                     // navigate to next screen

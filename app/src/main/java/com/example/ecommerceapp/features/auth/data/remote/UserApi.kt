@@ -4,11 +4,13 @@ import com.example.ecommerceapp.features.auth.data.remote.dto.LoginBodyRequest
 import com.example.ecommerceapp.features.auth.data.remote.dto.LoginResponse
 import com.example.ecommerceapp.features.auth.data.remote.dto.MessageResponseDTO
 import com.example.ecommerceapp.features.auth.data.remote.dto.RegisterRequestBody
+import com.example.ecommerceapp.features.auth.data.remote.dto.ResetPasswordBody
 import com.example.ecommerceapp.features.auth.data.remote.dto.UserResponseDTO
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 
 interface UserApi {
 
@@ -22,9 +24,9 @@ interface UserApi {
         @Body registerRequestBody: RegisterRequestBody
     ): Response<UserResponseDTO>
 
-    @POST("users/reset-password")
+    @PUT("users/reset-password")
     suspend fun resetPassword(
         @Header("Authorization") token: String,
-        @Body email: String
+        @Body resetPasswordBody: ResetPasswordBody
     ): Response<MessageResponseDTO>
 }

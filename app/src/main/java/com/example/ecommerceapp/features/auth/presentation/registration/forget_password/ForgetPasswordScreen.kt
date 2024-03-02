@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -47,19 +49,20 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
     route = Routes.FORGET_PASSWORD
 )
 fun ForgetPasswordScreen(
-    navigator: DestinationsNavigator,
    forgetPasswordViewModel: ForgetPasswordViewModel = hiltViewModel()
 ) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val scrollState = rememberScrollState()
     val state = forgetPasswordViewModel.state
-    val (emailFocusRequester, passwordFocusRequester) = FocusRequester.createRefs()
+    val (emailFocusRequester, _) = FocusRequester.createRefs()
 
     Scaffold (
         modifier = Modifier
             .fillMaxSize()
-            .padding(30.dp)
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .padding(horizontal = 30.dp)
             .background(MaterialTheme.colorScheme.background)
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
@@ -74,18 +77,9 @@ fun ForgetPasswordScreen(
                     .padding(padding)
                     .fillMaxSize()
                     .verticalScroll(scrollState),
-                verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Column (
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.Start
 
-                ){
                     // Title
                     Text(
                         text = stringResource(id = R.string.forget_password_title),
@@ -144,7 +138,6 @@ fun ForgetPasswordScreen(
                             )
                         }
                     )
-                }
             }
             if(state.isLoading) {
                 // loading indicator

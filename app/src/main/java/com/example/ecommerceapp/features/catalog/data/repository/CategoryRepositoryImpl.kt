@@ -1,7 +1,6 @@
 package com.example.ecommerceapp.features.catalog.data.repository
 
-import android.util.Log
-import com.example.ecommerceapp.config.AppDatabase
+import com.example.ecommerceapp.database.AppDatabase
 import com.example.ecommerceapp.features.catalog.data.entity.toCategoryList
 import com.example.ecommerceapp.features.catalog.data.remote.CategoryApi
 import com.example.ecommerceapp.features.catalog.data.remote.dto.toCategoryEntityList
