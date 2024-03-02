@@ -1,5 +1,6 @@
 package com.example.ecommerceapp.features.catalog.presentation.search
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ecommerceapp.features.catalog.domain.models.Category
@@ -23,11 +24,17 @@ class SearchViewModel @Inject constructor(
 
     private var searchJob: Job? = null
 
+    init {
+        search()
+    }
+
     fun onEvent(event: SearchEvent) {
         when (event) {
             is SearchEvent.OnSearchQueryChange -> {
                 _searchState.value = _searchState.value.copy(query = event.query)
                 debounceSearch(event.query)
+                Log.i("SearchViewModel", "onEvent: ${_searchState.value.query}")
+                Log.i("SearchViewModel", "onEvent: ${_searchState.value.loadedCategories.size}")
             }
 
             is SearchEvent.OnSearchCategory -> {
@@ -43,7 +50,7 @@ class SearchViewModel @Inject constructor(
     private fun debounceSearch(query: String) {
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
-            delay(500L)
+            delay(300L)
             search(query)
         }
     }

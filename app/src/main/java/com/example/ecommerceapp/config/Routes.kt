@@ -8,4 +8,5 @@ object Routes {
     const val HOME = "home"
     const val PRODUCT_DETAILS = "product_details"
     const val SEARCH_CATEGORY = "search_category"
+    const val CATEGORY = "category/{id}"
 }

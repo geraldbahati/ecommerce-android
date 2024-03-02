@@ -19,79 +19,54 @@ fun StaggeredFlowRow(
         modifier = modifier,
         content = content
     ) { measurables, constraints ->
+        // Keep track of each row's width and height
+        val rowWidths = mutableListOf<Int>()
+        val rowHeights = mutableListOf<Int>()
 
-        val widths = measurables.map { it.maxIntrinsicWidth(height = constraints.maxHeight) }
-        val totalWidth = constraints.maxWidth
-        val mainAxisSpacingPx = mainAxisSpacing.roundToPx()
-        val crossAxisSpacingPx = crossAxisSpacing.roundToPx()
-
-        val remainingMeasurables = measurables.toMutableList()
-        val remainingWidths = widths.toMutableList()
-        val sequences = mutableListOf<List<Placeable>>()
-        val crossAxisPositions = mutableListOf<Int>()
-
-        while (remainingMeasurables.isNotEmpty()) {
-            var currentWidth = 0
-            var index = 0
-
-            while (index < remainingWidths.size && (currentWidth + remainingWidths[index]) <= totalWidth) {
-                currentWidth += remainingWidths[index++] + mainAxisSpacingPx
-            }
-            currentWidth -= mainAxisSpacingPx
-
-            val remainingSpace = totalWidth - currentWidth
-            val extraSpaceForEach = remainingSpace / index
-            val placeables = remainingMeasurables
-                .zip(other = remainingWidths)
-                .take(n = index)
-                .map { (measurable, width) ->
-                    val newWidth = width + extraSpaceForEach
-                    measurable.measure(
-                        constraints = constraints.copy(
-                            minWidth = newWidth,
-                            maxWidth = newWidth
-                        )
-                    )
-                }
-
-            sequences.add(placeables)
-            repeat(times = index) {
-                remainingMeasurables.removeFirstOrNull()
-                remainingWidths.removeFirstOrNull()
-            }
-
-            val crossAxisSpacingToAdd = if (remainingMeasurables.isNotEmpty()) crossAxisSpacingPx else 0
-            crossAxisPositions.add(placeables.maxOf { it.height } + crossAxisSpacingToAdd)
+        val placeables = measurables.map { measurable ->
+            // Measure each child with the max width it can take
+            measurable.measure(constraints.copy(minWidth = 0))
         }
 
-        val totalHeight = crossAxisPositions.sum()
+        var currentWidth = 0
+        var currentHeight = 0
+        var maxHeightInRow = 0
 
-        layout(
-            width = totalWidth,
-            height = totalHeight
-        ) {
-            var yPosition = 0
+        placeables.forEach { placeable ->
+            if (currentWidth + placeable.width > constraints.maxWidth) {
+                // Move to the next row if adding the current placeable exceeds the max width
+                rowWidths.add(currentWidth)
+                rowHeights.add(maxHeightInRow)
+                currentWidth = 0
+                currentHeight += maxHeightInRow + crossAxisSpacing.roundToPx()
+                maxHeightInRow = 0
+            }
+            // Update the current row width and the max height found in the current row
+            currentWidth += placeable.width + mainAxisSpacing.roundToPx()
+            maxHeightInRow = maxOf(maxHeightInRow, placeable.height)
+        }
+        // Add the last row
+        rowWidths.add(currentWidth)
+        rowHeights.add(maxHeightInRow)
 
-            sequences.forEachIndexed { i, sequence ->
-                val sequenceMainAxisSizes = sequence.map { it.width }.toIntArray()
-                val mainAxisPositions = IntArray(sequenceMainAxisSizes.size) { 0 }
+        // Calculate the total height of the staggered grid
+        val totalHeight = rowHeights.sum() + crossAxisSpacing.roundToPx() * (rowHeights.size - 1)
+        val width = constraints.maxWidth
 
-                with(Arrangement.spacedBy(space = mainAxisSpacing)) {
-                    arrange(
-                        totalSize = totalWidth,
-                        sizes = sequenceMainAxisSizes,
-                        outPositions = mainAxisPositions
-                    )
+        layout(width, totalHeight) {
+            var yPos = 0
+            var xPos = 0
+            var rowIndex = 0
+
+            placeables.forEachIndexed { index, placeable ->
+                if (xPos + placeable.width > width) {
+                    // Move to next row
+                    xPos = 0
+                    yPos += rowHeights[rowIndex] + crossAxisSpacing.roundToPx()
+                    rowIndex++
                 }
-
-                mainAxisPositions.zip(other = sequence) { xPosition, placeable ->
-                    placeable.placeRelative(
-                        x = xPosition,
-                        y = yPosition
-                    )
-                }
-
-                yPosition += crossAxisPositions[i]
+                placeable.placeRelative(x = xPos, y = yPos)
+                xPos += placeable.width + mainAxisSpacing.roundToPx()
             }
         }
     }

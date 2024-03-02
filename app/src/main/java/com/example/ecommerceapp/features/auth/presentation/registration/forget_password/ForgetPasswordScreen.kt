@@ -2,7 +2,6 @@ package com.example.ecommerceapp.features.auth.presentation.registration.forget_
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,21 +14,29 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -38,10 +45,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.config.Routes
+import com.example.ecommerceapp.ui.theme.LocalSpacing
 import com.example.ecommerceapp.widgets.CustomButton
 import com.example.ecommerceapp.widgets.CustomOutlineTextField
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -49,20 +58,28 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
     route = Routes.FORGET_PASSWORD
 )
 fun ForgetPasswordScreen(
+    navigator: DestinationsNavigator,
    forgetPasswordViewModel: ForgetPasswordViewModel = hiltViewModel()
 ) {
+    val spacing = LocalSpacing.current
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val screenWidth = configuration.screenWidthDp.dp
+    val standardPadding = screenWidth * 0.072f
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val scrollState = rememberScrollState()
+
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
     val state = forgetPasswordViewModel.state
-    val (emailFocusRequester, _) = FocusRequester.createRefs()
 
     Scaffold (
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsPadding()
-            .padding(horizontal = 30.dp)
             .background(MaterialTheme.colorScheme.background)
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
@@ -71,36 +88,42 @@ fun ForgetPasswordScreen(
                 })
             },
 
+        topBar = {
+            ForgetPasswordScreenTopBar(
+                navigator = navigator
+            )
+        },
+
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
+
         content = { padding ->
             Column(
                 modifier = Modifier
                     .padding(padding)
+                    .padding(horizontal = standardPadding)
                     .fillMaxSize()
                     .verticalScroll(scrollState),
             ) {
-
+                    Spacer(modifier = Modifier.padding(screenHeight * 0.018f))
 
                     // Title
                     Text(
+                        modifier = Modifier.padding(bottom =  screenHeight * 0.01f),
                         text = stringResource(id = R.string.forget_password_title),
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
 
-                    Spacer(modifier = Modifier.padding(2.dp))
-
                     // Subtitle
                     Text(
                         text = stringResource(id = R.string.forget_password_subtitile),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 14.sp,
-                            lineHeight = 16.sp
-                        ),
+                        style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onBackground
                     )
 
-                    Spacer(modifier = Modifier.padding(30.dp))
+                Spacer(modifier = Modifier.padding(spacing.large))
 
                     // Login form
                     CustomOutlineTextField(
@@ -119,10 +142,9 @@ fun ForgetPasswordScreen(
                             keyboardType = KeyboardType.Email,
                         ),
                         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-                        modifier = Modifier.focusRequester(emailFocusRequester),
                     )
 
-                    Spacer(modifier = Modifier.padding(30.dp))
+                Spacer(modifier = Modifier.padding(spacing.huge))
 
                     // Login button
                     CustomButton(
@@ -139,19 +161,42 @@ fun ForgetPasswordScreen(
                         }
                     )
             }
-            if(state.isLoading) {
-                // loading indicator
-                CircularProgressIndicator()
-            }
 
-            if (state.snackbarErrorMessage?.isNotBlank() == true) {
-                // error message
-                Text(
-                    text = state.snackbarErrorMessage,
-                    style = TextStyle(
-                        color = MaterialTheme.colorScheme.error,
-                        fontWeight = FontWeight.Bold
+            if (state.isLoading) CircularProgressIndicator()
+            state.snackbarErrorMessage?.let {
+                scope.launch {
+                    val result = snackbarHostState.showSnackbar(
+                        message = it,
+                        actionLabel = "Dismiss"
                     )
+                    when (result) {
+                        SnackbarResult.ActionPerformed -> {
+//                            loginViewModel.onEvent(LoginEvent.OnDismissSnackbar)
+                        }
+
+                        SnackbarResult.Dismissed -> {
+//                            loginViewModel.onEvent(LoginEvent.OnDismissSnackbar)
+                        }
+                    }
+                }
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ForgetPasswordScreenTopBar(
+    navigator: DestinationsNavigator
+) {
+    TopAppBar(
+        title = {},
+        navigationIcon = {
+            IconButton(onClick = { navigator.navigateUp() }) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
         }

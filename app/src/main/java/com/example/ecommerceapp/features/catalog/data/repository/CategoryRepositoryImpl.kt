@@ -1,6 +1,7 @@
 package com.example.ecommerceapp.features.catalog.data.repository
 
 import com.example.ecommerceapp.database.AppDatabase
+import com.example.ecommerceapp.features.catalog.data.entity.CategoryEntity
 import com.example.ecommerceapp.features.catalog.data.entity.toCategoryList
 import com.example.ecommerceapp.features.catalog.data.remote.CategoryApi
 import com.example.ecommerceapp.features.catalog.data.remote.dto.toCategoryEntityList
@@ -44,7 +45,11 @@ class CategoryRepositoryImpl @Inject constructor(
     }
 
     override suspend fun searchCategory(query: String): Resource<List<Category>> {
-        val storageCategories = dao.searchCategories(query)
+        val storageCategories: List<CategoryEntity> = if (query.isEmpty()) {
+            dao.getCategories()
+        } else {
+            dao.searchCategories("*$query*")
+        }
         return if (storageCategories.isNotEmpty()) {
             Resource.Success(storageCategories.toCategoryList())
         } else {
