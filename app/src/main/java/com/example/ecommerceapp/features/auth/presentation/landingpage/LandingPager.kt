@@ -24,7 +24,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.ecommerceapp.R
-import com.example.ecommerceapp.config.Routes
+import com.example.ecommerceapp.features.destinations.CategoryDetailScreenDestination
+import com.example.ecommerceapp.features.destinations.LoginScreenDestination
 import com.example.ecommerceapp.ui.theme.LocalSpacing
 import com.example.ecommerceapp.widgets.CustomButton
 import com.ramcosta.composedestinations.annotation.Destination
@@ -98,7 +99,9 @@ fun LandingPager(
                 .clickable {
                     scope.launch {
                         navigator.navigate(
-                            route = Routes.SEARCH_CATEGORY,
+                            CategoryDetailScreenDestination(
+                            categoryId = "1"
+                        ),
                         )
 
                         pagerState.scrollToPage(pageDetails.size - 1)
@@ -131,9 +134,7 @@ fun LandingPager(
                 title = "Get Started",
                 onClick = {
                     // navigate to next screen
-                    navigator.navigate(
-                        route = Routes.LOGIN,
-                    )
+                    navigator.navigate(LoginScreenDestination)
                 }
             )
         }

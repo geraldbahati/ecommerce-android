@@ -1,8 +1,8 @@
 package com.example.ecommerceapp.features.catalog.presentation.widget
 
 import android.util.Log
+import android.view.MotionEvent
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
@@ -11,15 +11,17 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.unit.dp
 import com.example.ecommerceapp.ui.theme.LocalSpacing
-import kotlin.coroutines.cancellation.CancellationException
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun OptionOutlineButton(
     modifier: Modifier = Modifier,
@@ -32,6 +34,12 @@ fun OptionOutlineButton(
     }
 
     val spacing = LocalSpacing.current
+
+    LaunchedEffect(touchedDown) {
+        if (touchedDown.value) {
+            Log.i(identifier, "Button pressed.")
+        }
+    }
 
     var backgroundColor = MaterialTheme.colorScheme.background
     var contentColor = MaterialTheme.colorScheme.secondary
@@ -48,38 +56,23 @@ fun OptionOutlineButton(
 
     Card (
         modifier = modifier
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onPress = {
-                        Log.i(
-                            identifier,
-                            "onPress"
-                        )
+            .pointerInteropFilter { motionEvent ->
+                when (motionEvent.action) {
+                    MotionEvent.ACTION_DOWN -> {
                         touchedDown.value = true
-                        // start
-                        val released = try {
-                            tryAwaitRelease()
-                        } catch (c: CancellationException) {
-                            false
-                        }
-                        if (released) {
-                            // ACTION_UP
-                            Log.i(
-                                identifier,
-                                "ACTION_UP"
-                            )
-                            touchedDown.value = false
-                            onClick()
-                        } else {
-                            // ACTION_CANCEL
-                            Log.i(
-                                identifier,
-                                "ACTION_CANCEL"
-                            )
-                            touchedDown.value = false
-                        }
-                    },
-                )
+                        true
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        touchedDown.value = false
+                        onClick()
+                        true
+                    }
+                    MotionEvent.ACTION_CANCEL -> {
+                        touchedDown.value = false
+                        true
+                    }
+                    else -> false
+                }
             },
 
         shape = MaterialTheme.shapes.medium,

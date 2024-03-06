@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ecommerceapp.config.Routes
 import com.example.ecommerceapp.features.auth.domain.repository.UserRepository
 import com.example.ecommerceapp.features.auth.domain.usecase.LoginUseCase
 import com.example.ecommerceapp.util.Resource
@@ -48,11 +47,11 @@ class LoginViewModel @Inject constructor(
             }
 
             is LoginEvent.OnNavigateToRegister -> {
-                state.navigator?.navigate(Routes.REGISTER)
+//                state.navigator?.navigate(Routes.REGISTER)
             }
 
             is LoginEvent.OnNavigateToForgotPassword -> {
-                state.navigator?.navigate(Routes.FORGET_PASSWORD)
+//                state.navigator?.navigate(Routes.FORGET_PASSWORD)
             }
 
             is LoginEvent.OnNavigateToHome -> {

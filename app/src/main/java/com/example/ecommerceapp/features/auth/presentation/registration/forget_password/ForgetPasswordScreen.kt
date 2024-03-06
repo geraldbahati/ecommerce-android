@@ -37,14 +37,11 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ecommerceapp.R
-import com.example.ecommerceapp.config.Routes
 import com.example.ecommerceapp.ui.theme.LocalSpacing
 import com.example.ecommerceapp.widgets.CustomButton
 import com.example.ecommerceapp.widgets.CustomOutlineTextField
@@ -54,9 +51,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-@Destination(
-    route = Routes.FORGET_PASSWORD
-)
+@Destination
 fun ForgetPasswordScreen(
     navigator: DestinationsNavigator,
    forgetPasswordViewModel: ForgetPasswordViewModel = hiltViewModel()

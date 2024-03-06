@@ -55,7 +55,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ecommerceapp.R
-import com.example.ecommerceapp.config.Routes
 import com.example.ecommerceapp.ui.theme.LocalSpacing
 import com.example.ecommerceapp.ui.theme.Spacing
 import com.example.ecommerceapp.widgets.CustomButton
@@ -68,9 +67,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-@Destination(
-    route = Routes.LOGIN,
-)
+@Destination
 fun LoginScreen(
     navigator: DestinationsNavigator,
     loginViewModel: LoginViewModel = hiltViewModel(),
