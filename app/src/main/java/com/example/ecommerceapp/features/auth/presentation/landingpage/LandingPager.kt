@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.ecommerceapp.R
+import com.example.ecommerceapp.features.destinations.CategoriesScreenDestination
 import com.example.ecommerceapp.features.destinations.CategoryDetailScreenDestination
 import com.example.ecommerceapp.features.destinations.LoginScreenDestination
 import com.example.ecommerceapp.ui.theme.LocalSpacing
@@ -98,11 +99,7 @@ fun LandingPager(
                 .padding(spacing.medium)
                 .clickable {
                     scope.launch {
-                        navigator.navigate(
-                            CategoryDetailScreenDestination(
-                            categoryId = "1"
-                        ),
-                        )
+                        navigator.navigate(CategoriesScreenDestination)
 
                         pagerState.scrollToPage(pageDetails.size - 1)
                     }

@@ -1,4 +1,4 @@
-package com.example.ecommerceapp.features.catalog.presentation.widget
+package com.example.ecommerceapp.features.catalog.presentation.categories.search
 
 import android.util.Log
 import android.view.MotionEvent
@@ -19,14 +19,15 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.unit.dp
+import com.example.ecommerceapp.features.catalog.domain.models.Category
 import com.example.ecommerceapp.ui.theme.LocalSpacing
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun OptionOutlineButton(
     modifier: Modifier = Modifier,
-    title: String,
-    onClick: () -> Unit
+    category: Category,
+    onClick: (Category) -> Unit
 ) {
     val identifier = "[OptionOutlineButton]"
     val touchedDown = remember {
@@ -45,8 +46,6 @@ fun OptionOutlineButton(
     var contentColor = MaterialTheme.colorScheme.secondary
     var outlineColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.3016f)
 
-    val selectedBackgroundColor = MaterialTheme.colorScheme.primary
-    val selectedContentColor = MaterialTheme.colorScheme.onPrimary
 
     if (touchedDown.value) {
         backgroundColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
@@ -64,7 +63,7 @@ fun OptionOutlineButton(
                     }
                     MotionEvent.ACTION_UP -> {
                         touchedDown.value = false
-                        onClick()
+                        onClick(category)
                         true
                     }
                     MotionEvent.ACTION_CANCEL -> {
@@ -93,7 +92,7 @@ fun OptionOutlineButton(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = title,
+                text = category.name,
                 color = contentColor,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.defaultMinSize()

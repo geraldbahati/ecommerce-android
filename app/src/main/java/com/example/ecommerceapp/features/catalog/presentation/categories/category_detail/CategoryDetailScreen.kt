@@ -1,9 +1,9 @@
-package com.example.ecommerceapp.features.catalog.presentation.category_detail
+package com.example.ecommerceapp.features.catalog.presentation.categories.category_detail
 
 
-import android.content.res.Configuration
-import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
@@ -30,17 +31,28 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ecommerceapp.R
-import com.example.ecommerceapp.features.catalog.presentation.widget.OptionOutlineButton
+import com.example.ecommerceapp.features.catalog.domain.models.SubCategory
+import com.example.ecommerceapp.features.catalog.presentation.categories.CategoriesEvent
+import com.example.ecommerceapp.features.catalog.presentation.categories.CategoriesViewModel
 import com.example.ecommerceapp.ui.theme.LocalSpacing
 import com.example.ecommerceapp.ui.theme.dh
 import com.example.ecommerceapp.ui.theme.dw
@@ -48,20 +60,22 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 
-@Destination(
-    navArgsDelegate = CategoryDetailScreenNavArgs::class
-)
+@Destination
 @Composable
 fun CategoryDetailScreen(
-    destination: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    categoriesViewModel: CategoriesViewModel,
 ) {
+    val state by categoriesViewModel.state.collectAsState()
+
+
     val spacing = LocalSpacing.current
 
     Scaffold(
         topBar = {
             CategoryDetailTopBar(
                 modifier = Modifier.padding(horizontal = 0.02.dw),
-                onBack = { destination.navigateUp() },
+                onBack = { navigator.navigateUp() },
                 onCart = { /* TODO: Navigate to cart */ }
             )
         },
@@ -77,7 +91,13 @@ fun CategoryDetailScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ){
                     // Subcategory list
-                    SubCategoryList()
+                    SubCategoryList(
+                        subCategories = state.subCategories,
+                        selectedSubCategory = state.selectedSubCategory,
+                        onEvent = { event ->
+                            categoriesViewModel.onEvent(event)
+                        }
+                    )
 
                     Spacer(modifier = Modifier.height(spacing.huge))
 
@@ -129,11 +149,18 @@ private fun CategoryDetailTopBar(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SubCategoryList(
     modifier: Modifier = Modifier,
+    subCategories: List<SubCategory>,
+    selectedSubCategory: SubCategory? = null,
+    onEvent: (CategoriesEvent) -> Unit
 ) {
     val spacing = LocalSpacing.current
+
+    val listState = rememberLazyListState()
+
 
     Column (
         modifier = modifier.fillMaxWidth()
@@ -194,21 +221,23 @@ private fun SubCategoryList(
 
         // Subcategory list
         LazyRow(
+            state = listState,
             content = {
                 itemsIndexed(
-                    items = listOf("All", "Fiction", "Non-Fiction", "Children", "Science", "Art", "History", "Biography", "Cooking", "Travel"),
-                    key = { _, item -> item }
-                ) { index, item ->
+                    items = subCategories,
+                    key = { _, item -> item.id }
+                ) { index, subCategory ->
                     // Subcategory item
-                    OptionOutlineButton(
+                    SubCategoryOptionButton(
                         modifier = Modifier.padding(
                             start = if (index == 0) 0.072.dw else 0.dp,
-                            end = if (index == 9) 0.072.dw else spacing.small
+                            end = if (index == subCategories.size - 1) 0.072.dw else spacing.small
                         ),
-                        title = item,
+                        subCategory = subCategory,
+                        isSelected = selectedSubCategory?.id == subCategories[index].id,
                         onClick = {
-                        /* TODO: Navigate to subcategory */
-                            Log.i("CategoryDetailScreen", "Subcategory: $item")
+                            selectedSubCategory ->
+                            onEvent(CategoriesEvent.OnSubCategorySelected(selectedSubCategory))
                         }
                     )
                 }

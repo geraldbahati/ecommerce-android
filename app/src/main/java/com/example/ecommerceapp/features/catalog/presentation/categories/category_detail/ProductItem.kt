@@ -1,4 +1,4 @@
-package com.example.ecommerceapp.features.catalog.presentation.category_detail
+package com.example.ecommerceapp.features.catalog.presentation.categories.category_detail
 
 
 import androidx.compose.foundation.background

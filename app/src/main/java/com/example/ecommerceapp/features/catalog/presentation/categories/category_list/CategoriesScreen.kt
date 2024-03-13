@@ -1,4 +1,4 @@
-package com.example.ecommerceapp.features.catalog.presentation.categories
+package com.example.ecommerceapp.features.catalog.presentation.categories.category_list
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,7 +31,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.features.catalog.domain.models.Category
+import com.example.ecommerceapp.features.catalog.presentation.categories.CategoriesEvent
+import com.example.ecommerceapp.features.catalog.presentation.categories.CategoriesViewModel
 import com.example.ecommerceapp.features.catalog.presentation.widget.CategoryTab
+import com.example.ecommerceapp.features.destinations.CategoryDetailScreenDestination
+import com.example.ecommerceapp.features.destinations.SearchScreenDestination
 import com.example.ecommerceapp.ui.theme.LocalSpacing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -40,7 +44,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Composable
 fun CategoriesScreen(
     navigator: DestinationsNavigator,
-    categoriesViewModel: CategoriesViewModel = hiltViewModel()
+    categoriesViewModel: CategoriesViewModel,
 ) {
 
     val state by categoriesViewModel.state.collectAsState()
@@ -54,7 +58,9 @@ fun CategoriesScreen(
 
         topBar = {
             CategoriesAppBar(
-                navigator = navigator
+                navigator = navigator,
+                loadedCategories = state.loadedCategories,
+                onEvent = { event -> categoriesViewModel.onEvent(event) }
             )
         },
 
@@ -63,6 +69,7 @@ fun CategoriesScreen(
                 modifier = Modifier.padding(paddingValues),
                 categories = state.categories,
                 selectedCategory = state.selectedCategory,
+                navigator = navigator,
                 onEvent = { event -> categoriesViewModel.onEvent(event) }
             )
         }
@@ -72,7 +79,9 @@ fun CategoriesScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CategoriesAppBar(
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    loadedCategories: List<Category> = emptyList(),
+    onEvent: (CategoriesEvent) -> Unit
 ) {
     val spacing = LocalSpacing.current
 
@@ -90,7 +99,10 @@ private fun CategoriesAppBar(
         },
         actions = {
             IconButton(onClick = {
-//                navigator.navigate(Routes.SEARCH_CATEGORY)
+                if(loadedCategories.isEmpty()) {
+                    onEvent(CategoriesEvent.OnSearchCategory)
+                }
+                navigator.navigate(SearchScreenDestination)
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_search),
@@ -107,6 +119,7 @@ private fun ScreenContent(
     modifier: Modifier = Modifier,
     categories: List<Category>,
     selectedCategory: Category?,
+    navigator: DestinationsNavigator,
     onEvent: (CategoriesEvent) -> Unit
 ) {
     val spacing = LocalSpacing.current
@@ -145,18 +158,13 @@ private fun ScreenContent(
                         isSelected =  selectedCategory?.id == category.id,
                         category = category,
                         onClick = {
-                            selectedCategory -> onEvent(CategoriesEvent.OnCategorySelected(selectedCategory))
+                            selectedCategory -> onEvent(
+                            CategoriesEvent.OnCategorySelected(
+                                selectedCategory
+                            )
+                        )
 
-                            //TODO navigate to category
-                        }
-                    )
-                    CategoryTab(
-                        isSelected =  selectedCategory?.id == category.id,
-                        category = category,
-                        onClick = {
-                                selectedCategory -> onEvent(CategoriesEvent.OnCategorySelected(selectedCategory))
-
-                            //TODO navigate to category
+                            navigator.navigate(CategoryDetailScreenDestination)
                         }
                     )
                 }

@@ -1,4 +1,4 @@
-package com.example.ecommerceapp.features.catalog.presentation.search
+package com.example.ecommerceapp.features.catalog.presentation.categories.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,8 +30,9 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -40,30 +41,32 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ecommerceapp.R
-import com.example.ecommerceapp.features.catalog.presentation.widget.OptionOutlineButton
+import com.example.ecommerceapp.features.catalog.presentation.categories.CategoriesEvent
+import com.example.ecommerceapp.features.catalog.presentation.categories.CategoriesViewModel
+import com.example.ecommerceapp.features.destinations.CategoryDetailScreenDestination
 import com.example.ecommerceapp.ui.theme.LocalSpacing
 import com.example.ecommerceapp.ui.theme.Spacing
 import com.example.ecommerceapp.widgets.StaggeredFlowRow
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Destination
 @Composable
 fun SearchScreen(
     navigator: DestinationsNavigator,
-    searchViewModel: SearchViewModel = hiltViewModel()
+    categoriesViewModel: CategoriesViewModel,
 ) {
 
-    val state by searchViewModel.searchState.collectAsState()
+    val state by categoriesViewModel.state.collectAsState()
 
     val spacing = LocalSpacing.current
     val configuration = LocalConfiguration.current
@@ -99,10 +102,10 @@ fun SearchScreen(
                 query = state.query,
                 spacing = spacing,
                 onQueryChange = { query ->
-                    searchViewModel.onEvent(SearchEvent.OnSearchQueryChange(query))
+                    categoriesViewModel.onEvent(CategoriesEvent.OnSearchQueryChange(query))
                 },
-                onSearch = { query ->
-                    searchViewModel.onEvent(SearchEvent.OnSearchCategory(query))
+                onSearch = { _ ->
+                    categoriesViewModel.onEvent(CategoriesEvent.OnSearchCategory)
                 }
             )
 
@@ -115,11 +118,13 @@ fun SearchScreen(
             ){
                 state.loadedCategories.forEach { category ->
                     OptionOutlineButton(
-                        title = category.name,
+                        category = category,
                         onClick = {
+                            selectedCategory ->
                             focusManager.clearFocus()
                             keyboardController?.hide()
-//                            navigator.navigate(Routes.CATEGORY)
+                            categoriesViewModel.onEvent(CategoriesEvent.OnSearchCategorySelected(selectedCategory))
+                            navigator.navigate(CategoryDetailScreenDestination)
                         }
                     )
                 }
@@ -139,6 +144,7 @@ private fun MySearchBar(
     Row(
         modifier = modifier.fillMaxWidth(),
     ) {
+
         TextField(
             value = query,
             onValueChange = onQueryChange,
