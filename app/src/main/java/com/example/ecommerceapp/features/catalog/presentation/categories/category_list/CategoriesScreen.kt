@@ -163,7 +163,6 @@ private fun ScreenContent(
                                 selectedCategory
                             )
                         )
-
                             navigator.navigate(CategoryDetailScreenDestination)
                         }
                     )

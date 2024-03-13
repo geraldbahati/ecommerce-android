@@ -1,6 +1,7 @@
 package com.example.ecommerceapp.features.catalog.presentation.categories
 
 import com.example.ecommerceapp.features.catalog.domain.models.Category
+import com.example.ecommerceapp.features.catalog.domain.models.Product
 import com.example.ecommerceapp.features.catalog.domain.models.SubCategory
 
 sealed class CategoriesEvent {
@@ -17,4 +18,8 @@ sealed class CategoriesEvent {
     data object OnSearchCategory: CategoriesEvent()
     data class OnSearchCategorySelected(val category: Category): CategoriesEvent()
     data class OnToggleSearch(val isSearching: Boolean): CategoriesEvent()
+
+    // products events
+    data class OnProductSelected(val product: Product): CategoriesEvent()
+    data object OnLoadProducts: CategoriesEvent()
 }

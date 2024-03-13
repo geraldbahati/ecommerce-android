@@ -20,9 +20,9 @@ data class ProductFtsEntity(
     tableName = Constants.PRODUCT_TABLE_NAME,
     foreignKeys = [
         ForeignKey(
-            entity = CategoryEntity::class,
+            entity = SubCategoryEntity::class,
             parentColumns = ["id"],
-            childColumns = ["categoryID"],
+            childColumns = ["subCategoryId"],
             onDelete = ForeignKey.CASCADE
         )
     ]
@@ -34,7 +34,7 @@ data class ProductEntity(
     val imageURL: String,
     val price: Double,
     val stock: Int,
-    val categoryID: String,
+    val subCategoryId: String,
     val rating: Double,
     val reviewCount: Int,
     val discountRate: String,
@@ -47,7 +47,7 @@ data class ProductEntity(
         imageURL = imageURL,
         price = price,
         stock = stock,
-        categoryID = categoryID,
+        subCategoryId = subCategoryId,
         rating = rating,
         reviewCount = reviewCount,
         discountRate = discountRate,

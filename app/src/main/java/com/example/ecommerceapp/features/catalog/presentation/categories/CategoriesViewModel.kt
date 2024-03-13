@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ecommerceapp.features.catalog.domain.models.Category
+import com.example.ecommerceapp.features.catalog.domain.models.Product
 import com.example.ecommerceapp.features.catalog.domain.models.SubCategory
 import com.example.ecommerceapp.features.catalog.domain.usecase.GetCategoriesUseCase
+import com.example.ecommerceapp.features.catalog.domain.usecase.GetProductsBySubCategoryUseCase
 import com.example.ecommerceapp.features.catalog.domain.usecase.GetSubCategoriesByCategoryUseCase
 import com.example.ecommerceapp.features.catalog.domain.usecase.SearchCategoriesUseCase
 import com.example.ecommerceapp.util.Resource
@@ -22,7 +24,8 @@ import javax.inject.Inject
 class CategoriesViewModel @Inject constructor (
     private val getCategoriesUseCase: GetCategoriesUseCase,
     private val getSubCategoriesByCategoryUseCase: GetSubCategoriesByCategoryUseCase,
-    private val searchCategoriesUseCase: SearchCategoriesUseCase
+    private val searchCategoriesUseCase: SearchCategoriesUseCase,
+    private val getProductsBySubCategoryUseCase: GetProductsBySubCategoryUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(CategoriesState())
     val state: StateFlow<CategoriesState> = _state.asStateFlow()
@@ -45,7 +48,6 @@ class CategoriesViewModel @Inject constructor (
                     selectedCategory = event.category
                 )
 
-
                 getSubCategories()
             }
 
@@ -55,9 +57,15 @@ class CategoriesViewModel @Inject constructor (
 
             // events for sub categories
             is CategoriesEvent.OnSubCategorySelected -> {
+                if (_state.value.selectedSubCategory == event.subCategory && _state.value.products.isNotEmpty()) {
+                    return
+                }
+
                 _state.value = _state.value.copy(
                     selectedSubCategory = event.subCategory
                 )
+
+                getProductsBySubCategory()
             }
 
             // search events
@@ -84,6 +92,17 @@ class CategoriesViewModel @Inject constructor (
                     selectedSearchCategory = event.category
                 )
                 getSubCategories(_state.value.selectedSearchCategory?.id ?: "")
+            }
+
+            // products events
+            is CategoriesEvent.OnProductSelected -> {
+                _state.value = _state.value.copy(
+                    selectedProduct = event.product
+                )
+            }
+
+            is CategoriesEvent.OnLoadProducts -> {
+                getProductsBySubCategory()
             }
         }
     }
@@ -113,6 +132,43 @@ class CategoriesViewModel @Inject constructor (
                         }
                     }
                 }
+        }
+    }
+
+    private fun getProductsBySubCategory(
+        subCategoryId: String = _state.value.selectedSubCategory?.id ?: ""
+    ) {
+        viewModelScope.launch {
+            getProductsBySubCategoryUseCase(subCategoryId)
+                .collect { result ->
+                    handleProductsResult(result)
+                }
+        }
+    }
+
+    private fun handleProductsResult(result: Resource<List<Product>>) {
+        Log.d("CategoryDetailViewModel", "Fetching products result: ${result.data?.size ?: 0}")
+        when (result) {
+            is Resource.Loading -> {
+                _state.value = _state.value.copy(
+                    isLoadingProducts = true
+                )
+            }
+
+            is Resource.Success -> {
+                _state.value = _state.value.copy(
+                    isLoadingProducts = false,
+                    products = result.data ?: emptyList(),
+                    selectedProduct = result.data?.firstOrNull()
+                )
+            }
+
+            is Resource.Error -> {
+                _state.value = _state.value.copy(
+                    isLoadingProducts = false,
+                    errorMessage = result.message ?: "An unexpected error occurred"
+                )
+            }
         }
     }
 

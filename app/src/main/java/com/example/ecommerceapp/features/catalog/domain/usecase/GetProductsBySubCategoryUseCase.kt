@@ -7,12 +7,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class GetProductsUseCase @Inject constructor(
+class GetProductsBySubCategoryUseCase @Inject constructor(
     private val repository: ProductRepository
-){
-    suspend operator fun invoke(): Flow<Resource<List<Product>>> {
+) {
+    suspend operator fun invoke(subCategoryId: String): Flow<Resource<List<Product>>> {
         return flow {
-            when (val products = repository.getProducts()) {
+            when (val products = repository.getProductsBySubCategory(subCategoryId)) {
                 is Resource.Success -> {
                     emit(Resource.Success(products.data))
                 }

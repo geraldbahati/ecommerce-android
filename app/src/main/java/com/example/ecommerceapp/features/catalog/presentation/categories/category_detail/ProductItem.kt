@@ -39,10 +39,7 @@ import com.example.ecommerceapp.ui.theme.dw
 @Composable
 fun ProductItem(
     modifier: Modifier = Modifier,
-//    product: Product,
-    title: String,
-    price: String,
-    imageUrl: String,
+    product: Product,
     onProductClick: (LayoutCoordinates ,Product) -> Unit = { _, _ -> }
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -77,7 +74,7 @@ fun ProductItem(
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(imageUrl)
+                    .data(product.imageURL)
                     .crossfade(true)
                     .build(),
                 placeholder = painterResource(id = R.drawable.ic_product_placeholder),
@@ -96,7 +93,7 @@ fun ProductItem(
 
         // Product Title
         Text(
-            text = title,
+            text = product.name,
             style = MaterialTheme.typography.bodyMedium.copy(
                 textAlign = TextAlign.Center
             ),
@@ -108,7 +105,7 @@ fun ProductItem(
 
         // Product Price
         Text(
-            text = price,
+            text = "$${product.price}",
             style = MaterialTheme.typography.titleMedium.copy(
                 textAlign = TextAlign.Center
             ),

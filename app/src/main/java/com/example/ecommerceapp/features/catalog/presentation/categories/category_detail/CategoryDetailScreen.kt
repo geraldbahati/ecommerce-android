@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ecommerceapp.R
+import com.example.ecommerceapp.features.catalog.domain.models.Product
 import com.example.ecommerceapp.features.catalog.domain.models.SubCategory
 import com.example.ecommerceapp.features.catalog.presentation.categories.CategoriesEvent
 import com.example.ecommerceapp.features.catalog.presentation.categories.CategoriesViewModel
@@ -102,7 +103,10 @@ fun CategoryDetailScreen(
                     Spacer(modifier = Modifier.height(spacing.huge))
 
                     // Product list
-                    ProductList(modifier = Modifier.padding(horizontal = 0.072.dw))
+                    ProductList(
+                        modifier = Modifier.padding(horizontal = 0.072.dw),
+                        products = state.products
+                    )
                 }
 
             }
@@ -249,7 +253,8 @@ private fun SubCategoryList(
 
 @Composable
 fun ProductList(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    products: List<Product> = emptyList()
 ) {
     LazyVerticalStaggeredGrid(
         modifier = modifier,
@@ -257,20 +262,20 @@ fun ProductList(
         verticalItemSpacing = 0.03.dh,
         horizontalArrangement = Arrangement.spacedBy(0.03.dw),
         content = {
-            val itemsList = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25")
-            val specialSequence = generateSpecialSequence(itemsList.size - 1)
+            val specialSequence = generateSpecialSequence(products.size - 1)
 
             itemsIndexed(
-                items = itemsList,
-                key = { _, item -> item }
-            ) { index, item ->
+                items = products,
+                key = { _, item -> item.id }
+            ) { index, product ->
                 // Use the sequence to determine the height
                 ProductItem(
                     modifier = Modifier
                         .height(if (index in specialSequence) 0.24.dh else 0.27.dh),
-                    title = "Product $item",
-                    price = "$${index * 10}",
-                    imageUrl = "https://cdn.vox-cdn.com/thumbor/YDX2_jc6LlEumMk5eggV1ygGBm8=/0x0:1076x599/1200x628/filters:focal(538x300:539x301)/cdn.vox-cdn.com/uploads/chorus_asset/file/20030737/xWZMNYm.png"
+                    product = product
+//                    title = "Product $item",
+//                    price = "$${index * 10}",
+//                    imageUrl = "https://cdn.vox-cdn.com/thumbor/YDX2_jc6LlEumMk5eggV1ygGBm8=/0x0:1076x599/1200x628/filters:focal(538x300:539x301)/cdn.vox-cdn.com/uploads/chorus_asset/file/20030737/xWZMNYm.png"
                 )
             }
         }

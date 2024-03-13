@@ -10,7 +10,7 @@ data class Product (
     val imageURL: String,
     val price: Double,
     val stock: Int,
-    val categoryID: String,
+    val subCategoryId: String,
     val rating: Double,
     val reviewCount: Int,
     val discountRate: String,

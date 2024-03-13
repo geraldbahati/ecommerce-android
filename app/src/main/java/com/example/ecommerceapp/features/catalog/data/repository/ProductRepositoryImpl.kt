@@ -18,50 +18,22 @@ class ProductRepositoryImpl @Inject constructor(
     db: AppDatabase,
 ) : ProductRepository {
     private val dao = db.productDao
-    override suspend fun getProducts(): Resource<List<Product>> {
-        val storageProducts = dao.getProducts()
-        return if (storageProducts.isNotEmpty()) {
-            Resource.Success(storageProducts.toProductList())
-        } else {
-            val response = performRequest { api.getProducts() }
-            if (response.isSuccessful) {
-                val products = response.body()!!.toProductEntityList()
-                dao.insertProducts(products)
-                Resource.Success(products.toProductList())
-            } else {
-                Resource.Error(response.message())
-            }
-        }
-    }
 
-    override suspend fun getProductById(id: String): Resource<Product> {
-        val storageProduct = dao.getProduct(id)
-        return if (storageProduct != null) {
-            Resource.Success(storageProduct.toProduct())
-        } else {
-            Resource.Error("Product not found")
-        }
-    }
 
-    override suspend fun searchProduct(query: String): Resource<List<Product>> {
-        val storageProducts = dao.searchProducts(query)
-        return if (storageProducts.isNotEmpty()) {
-            Resource.Success(storageProducts.toProductList())
-        } else {
-            Resource.Error("Product not found")
+    override suspend fun getProductsBySubCategory(subCategoryId: String): Resource<List<Product>> {
+        val cachedProducts = dao.getProductsBySubCategory(subCategoryId)
+        if (cachedProducts.isNotEmpty()) {
+            return Resource.Success(cachedProducts.toProductList())
         }
-    }
 
-    override suspend fun refreshProducts(): Resource<List<Product>> {
-        val response = performRequest { api.getProducts() }
-        return if (response.isSuccessful) {
-            val products = response.body()!!.toProductEntityList()
-            dao.clearProducts()
-            dao.insertProducts(products)
-            Resource.Success(products.toProductList())
-        } else {
-            Resource.Error(response.message())
+        val response = performRequest { api.getProductsBySubCategory(subCategoryId) }
+        if (response.isSuccessful) {
+            val products = response.body()?.toProductEntityList()
+            products?.let { dao.insertProducts(it) }
+            return Resource.Success(products?.toProductList() ?: emptyList())
         }
+
+        return Resource.Error(response.message())
     }
 
     private suspend fun <T> performRequest(request: suspend () -> Response<T>): Response<T> {
