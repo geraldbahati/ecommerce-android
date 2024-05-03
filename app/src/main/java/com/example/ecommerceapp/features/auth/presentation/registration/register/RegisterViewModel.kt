@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 //import com.example.ecommerceapp.config.Routes
 import com.example.ecommerceapp.features.auth.domain.repository.UserRepository
 import com.example.ecommerceapp.features.auth.domain.usecase.RegisterUseCase
+import com.example.ecommerceapp.features.destinations.HomeScreenDestination
+import com.example.ecommerceapp.features.destinations.MainAppDestination
 import com.example.ecommerceapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -65,7 +67,8 @@ class RegisterViewModel @Inject constructor(
             }
             is RegisterEvent.OnRegister -> {
                 if(validator()){
-                    register()
+//                    register()
+                    state.navigator?.navigate(MainAppDestination)
                 }
             }
 
@@ -74,7 +77,7 @@ class RegisterViewModel @Inject constructor(
             }
 
             is RegisterEvent.OnNavigateToHome -> {
-//                state.navigator?.navigate(Routes.HOME)
+                state.navigator?.navigate(MainAppDestination)
             }
 
             is RegisterEvent.OnNavigateToTermsAndConditions -> {

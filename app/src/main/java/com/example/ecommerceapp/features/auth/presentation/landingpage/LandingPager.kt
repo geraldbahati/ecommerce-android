@@ -24,9 +24,12 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.ecommerceapp.R
+import com.example.ecommerceapp.features.NavGraphs
 import com.example.ecommerceapp.features.destinations.CategoriesScreenDestination
 import com.example.ecommerceapp.features.destinations.CategoryDetailScreenDestination
+import com.example.ecommerceapp.features.destinations.HomeScreenDestination
 import com.example.ecommerceapp.features.destinations.LoginScreenDestination
+import com.example.ecommerceapp.features.destinations.MainAppDestination
 import com.example.ecommerceapp.ui.theme.LocalSpacing
 import com.example.ecommerceapp.widgets.CustomButton
 import com.ramcosta.composedestinations.annotation.Destination
@@ -99,7 +102,7 @@ fun LandingPager(
                 .padding(spacing.medium)
                 .clickable {
                     scope.launch {
-                        navigator.navigate(CategoriesScreenDestination)
+                        navigator.navigate(MainAppDestination)
 
                         pagerState.scrollToPage(pageDetails.size - 1)
                     }

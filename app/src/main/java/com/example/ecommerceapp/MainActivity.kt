@@ -7,7 +7,9 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -19,6 +21,7 @@ import androidx.work.WorkManager
 import com.example.ecommerceapp.config.Constants
 import com.example.ecommerceapp.features.NavGraphs
 import com.example.ecommerceapp.features.catalog.data.sync.DataSyncWorker
+import com.example.ecommerceapp.features.catalog.presentation.bottomnav.MainApp
 import com.example.ecommerceapp.features.catalog.presentation.categories.CategoriesViewModel
 import com.example.ecommerceapp.features.catalog.presentation.categories.category_detail.CategoryDetailScreen
 import com.example.ecommerceapp.features.catalog.presentation.categories.category_list.CategoriesScreen
@@ -53,30 +56,31 @@ class MainActivity : ComponentActivity() {
             EcommerceAppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    val categoriesViewModel = hiltViewModel<CategoriesViewModel>()
+//                    val categoriesViewModel = hiltViewModel<CategoriesViewModel>()
 
-                    DestinationsNavHost(navGraph = NavGraphs.root) {
-                        composable(CategoriesScreenDestination) {
-                            CategoriesScreen(
-                                navigator = destinationsNavigator,
-                                categoriesViewModel = categoriesViewModel
-                            )
-                        }
-
-                        composable(CategoryDetailScreenDestination) {
-                            CategoryDetailScreen(
-                                navigator = destinationsNavigator,
-                                categoriesViewModel = categoriesViewModel
-                            )
-                        }
-
-                        composable(SearchScreenDestination) {
-                            SearchScreen(
-                                navigator = destinationsNavigator,
-                                categoriesViewModel = categoriesViewModel
-                            )
-                        }
-                    }
+                    DestinationsNavHost(navGraph = NavGraphs.root)
+//                    {
+//                        composable(CategoriesScreenDestination) {
+//                            CategoriesScreen(
+//                                navigator = destinationsNavigator,
+//                                categoriesViewModel = categoriesViewModel
+//                            )
+//                        }
+//
+//                        composable(CategoryDetailScreenDestination) {
+//                            CategoryDetailScreen(
+//                                navigator = destinationsNavigator,
+//                                categoriesViewModel = categoriesViewModel
+//                            )
+//                        }
+//
+//                        composable(SearchScreenDestination) {
+//                            SearchScreen(
+//                                navigator = destinationsNavigator,
+//                                categoriesViewModel = categoriesViewModel
+//                            )
+//                        }
+//                    }
                 }
             }
         }

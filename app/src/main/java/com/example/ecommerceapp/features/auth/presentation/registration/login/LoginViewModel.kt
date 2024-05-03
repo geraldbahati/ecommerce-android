@@ -7,6 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ecommerceapp.features.auth.domain.repository.UserRepository
 import com.example.ecommerceapp.features.auth.domain.usecase.LoginUseCase
+import com.example.ecommerceapp.features.destinations.ForgetPasswordScreenDestination
+import com.example.ecommerceapp.features.destinations.HomeScreenDestination
+import com.example.ecommerceapp.features.destinations.MainAppDestination
+import com.example.ecommerceapp.features.destinations.RegisterScreenDestination
 import com.example.ecommerceapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -47,21 +51,21 @@ class LoginViewModel @Inject constructor(
             }
 
             is LoginEvent.OnNavigateToRegister -> {
-//                state.navigator?.navigate(Routes.REGISTER)
+                state.navigator?.navigate(RegisterScreenDestination)
             }
 
             is LoginEvent.OnNavigateToForgotPassword -> {
-//                state.navigator?.navigate(Routes.FORGET_PASSWORD)
+                state.navigator?.navigate(ForgetPasswordScreenDestination)
             }
 
             is LoginEvent.OnNavigateToHome -> {
-//                state.navigator?.navigate(Routes.HOME)
+                state.navigator?.navigate(MainAppDestination)
             }
 
             is LoginEvent.OnLogin -> {
                 if (validated()) {
-                    login()
-//                    state.navigator?.navigate(Routes.HOME)
+//                    login()
+                    state.navigator?.navigate(MainAppDestination)
                 }
             }
         }

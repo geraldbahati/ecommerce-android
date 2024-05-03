@@ -68,11 +68,6 @@ fun RevealDotIndicator(
     }
 }
 
-// To get scroll offset
-@OptIn(ExperimentalFoundationApi::class)
-val PagerState.pageOffset: Float
-    get() = this.currentPage + this.currentPageOffsetFraction
-
 
 // To get scrolled offset from snap position
 @OptIn(ExperimentalFoundationApi::class)

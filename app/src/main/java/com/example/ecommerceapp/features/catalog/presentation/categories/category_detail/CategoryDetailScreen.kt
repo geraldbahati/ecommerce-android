@@ -1,9 +1,7 @@
 package com.example.ecommerceapp.features.catalog.presentation.categories.category_detail
 
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,24 +29,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.features.catalog.domain.models.Product
 import com.example.ecommerceapp.features.catalog.domain.models.SubCategory
@@ -61,7 +49,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 
-@Destination
+@Destination(navGraph = "HomeNavGraph")
 @Composable
 fun CategoryDetailScreen(
     navigator: DestinationsNavigator,
@@ -88,11 +76,12 @@ fun CategoryDetailScreen(
                     .fillMaxSize(),
             ) {
 
-                Column (
+                Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                ){
+                ) {
                     // Subcategory list
                     SubCategoryList(
+                        categoryTitle = state.selectedCategory?.name ?: "Category",
                         subCategories = state.subCategories,
                         selectedSubCategory = state.selectedSubCategory,
                         onEvent = { event ->
@@ -153,10 +142,11 @@ private fun CategoryDetailTopBar(
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+
 @Composable
 private fun SubCategoryList(
     modifier: Modifier = Modifier,
+    categoryTitle: String,
     subCategories: List<SubCategory>,
     selectedSubCategory: SubCategory? = null,
     onEvent: (CategoriesEvent) -> Unit
@@ -166,13 +156,13 @@ private fun SubCategoryList(
     val listState = rememberLazyListState()
 
 
-    Column (
+    Column(
         modifier = modifier.fillMaxWidth()
-    ){
+    ) {
         Spacer(modifier = Modifier.height(0.008.dh))
 
         // Title and filter
-        Row (
+        Row(
             modifier = Modifier
                 .padding(horizontal = 0.072.dw, vertical = 0.008.dh)
                 .fillMaxWidth(),
@@ -180,7 +170,7 @@ private fun SubCategoryList(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // title
-            Row (
+            Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -192,7 +182,7 @@ private fun SubCategoryList(
                 )
 
                 Text(
-                    text = "Books",
+                    text = categoryTitle,
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontSize = 22.sp,
                         lineHeight = 28.sp
@@ -201,11 +191,11 @@ private fun SubCategoryList(
             }
 
             // filter
-            Row (
+            Row(
                 modifier = Modifier
                     .clickable(onClick = { /* TODO: Navigate to filter */ }),
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_filter),
                     contentDescription = "Filter",
@@ -239,8 +229,7 @@ private fun SubCategoryList(
                         ),
                         subCategory = subCategory,
                         isSelected = selectedSubCategory?.id == subCategories[index].id,
-                        onClick = {
-                            selectedSubCategory ->
+                        onClick = { selectedSubCategory ->
                             onEvent(CategoriesEvent.OnSubCategorySelected(selectedSubCategory))
                         }
                     )
@@ -273,9 +262,6 @@ fun ProductList(
                     modifier = Modifier
                         .height(if (index in specialSequence) 0.24.dh else 0.27.dh),
                     product = product
-//                    title = "Product $item",
-//                    price = "$${index * 10}",
-//                    imageUrl = "https://cdn.vox-cdn.com/thumbor/YDX2_jc6LlEumMk5eggV1ygGBm8=/0x0:1076x599/1200x628/filters:focal(538x300:539x301)/cdn.vox-cdn.com/uploads/chorus_asset/file/20030737/xWZMNYm.png"
                 )
             }
         }

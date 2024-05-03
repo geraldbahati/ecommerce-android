@@ -40,7 +40,7 @@ import com.example.ecommerceapp.ui.theme.LocalSpacing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination
+@Destination(navGraph = "HomeNavGraph")
 @Composable
 fun CategoriesScreen(
     navigator: DestinationsNavigator,
