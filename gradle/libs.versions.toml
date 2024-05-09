@@ -2,7 +2,7 @@
 accompanistSwiperefresh = "0.24.2-alpha"
 activityCompose = "1.9.0"
 activityComposeVersion = "1.9.0"
-gradlePluginVersion = "8.3.2"
+gradlePluginVersion = "8.4.0"
 kotlin = "1.9.0"
 ksp = "1.9.0-1.0.12"
 coilCompose = "2.6.0"

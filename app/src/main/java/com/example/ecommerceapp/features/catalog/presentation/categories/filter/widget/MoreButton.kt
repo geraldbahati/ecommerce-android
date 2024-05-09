@@ -1,6 +1,5 @@
 package com.example.ecommerceapp.features.catalog.presentation.categories.filter.widget
 
-import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -12,7 +11,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,29 +23,30 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun FilterItem(
+fun MoreButton(
     modifier: Modifier = Modifier,
-    item: String,
-    isSelected: Boolean,
-    onItemSelected: (String) -> Unit
+    onItemSelected: () -> Unit
 ) {
-    val touchedDown = remember { mutableStateOf(false) }
+    val (touchedDown, setTouchedDown) = remember { mutableStateOf(false) }
 
-    val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background
-    val contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onBackground
-    val outlineColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary.copy(alpha = 0.3016f)
+    val backgroundColor = MaterialTheme.colorScheme.primary.copy(alpha = if (touchedDown) 1f else 0.297f)
+    val contentColor = if (touchedDown) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onBackground
+    val outlineColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.3016f)
 
     Card(
         modifier = modifier
-            .clickable(onClick = { onItemSelected(item) })
+            .clickable(
+                onClick = onItemSelected,
+                onClickLabel = "Show more options"
+            )
             .pointerInteropFilter { motionEvent ->
                 when (motionEvent.action) {
                     MotionEvent.ACTION_DOWN -> {
-                        touchedDown.value = true
+                        setTouchedDown(true)
                         true
                     }
                     MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                        touchedDown.value = false
+                        setTouchedDown(false)
                         true
                     }
                     else -> false
@@ -67,7 +66,7 @@ fun FilterItem(
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
             Text(
-                text = item,
+                text = "+ More",
                 style = MaterialTheme.typography.titleMedium.copy(fontSize = 13.sp, lineHeight = 16.sp),
                 textAlign = TextAlign.Center
             )

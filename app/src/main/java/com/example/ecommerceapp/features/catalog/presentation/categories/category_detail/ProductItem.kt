@@ -57,7 +57,7 @@ fun ProductItem(
                 indication = null
             ) {
                 layoutCoordinates?.let {
-//                    onClickListener(it, product)
+                    onProductClick(it, product)
                 }
             },
 

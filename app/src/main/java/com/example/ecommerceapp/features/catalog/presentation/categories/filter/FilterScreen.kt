@@ -38,6 +38,9 @@ import androidx.compose.ui.unit.sp
 import com.example.ecommerceapp.config.Constants
 import com.example.ecommerceapp.features.catalog.presentation.categories.filter.widget.ColourDotOption
 import com.example.ecommerceapp.features.catalog.presentation.categories.filter.widget.FilterItem
+import com.example.ecommerceapp.features.catalog.presentation.categories.filter.widget.MoreButton
+import com.example.ecommerceapp.features.catalog.presentation.categories.filter.widget.PriceRangeSlider
+import com.example.ecommerceapp.widgets.CustomButton
 import com.ramcosta.composedestinations.annotation.Destination
 
 @Destination(navGraph = Constants.NAV_GRAPH_HOME)
@@ -50,10 +53,9 @@ fun FilterScreen() {
             .navigationBarsPadding()
             .background(MaterialTheme.colorScheme.background),
         topBar = {
-             FilterTopBar()
+            FilterTopBar()
         },
-        content = {
-            paddingValues ->
+        content = { paddingValues ->
             FilterContent(
                 modifier = Modifier.padding(paddingValues)
             )
@@ -77,12 +79,12 @@ fun FilterTopBar() {
         },
         actions = {
             /// Cancel Button
-              IconButton(onClick = { /*TODO*/ }) {
-                  Icon(
-                      imageVector = Icons.Default.Close,
-                      contentDescription = "Close"
-                  )
-              }
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Close"
+                )
+            }
         },
     )
 }
@@ -91,19 +93,22 @@ fun FilterTopBar() {
 fun FilterContent(
     modifier: Modifier = Modifier
 ) {
-    Column (
+    Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 4.dp),
+            .padding(horizontal = 4.dp)
+            .padding(bottom = 16.dp),
 //            .padding(horizontal = 0.072.dw),
-    ){
+    ) {
         // scrollable content
-        LazyColumn (
-            modifier = Modifier.fillMaxSize(),
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f),
             verticalArrangement = Arrangement.spacedBy(28.dp)
         ) {
             // sort by
-            item (
+            item(
                 key = "Sort By"
             ) {
                 SortByFilter()
@@ -112,18 +117,40 @@ fun FilterContent(
             // material
             item(
                 key = "Material"
-            ){
-                 MaterialFilter(
-                        materials = listOf("Cotton", "Silk", "Polyester", "Wool", "Linen", "Denim", "Leather")
-                 )
+            ) {
+                GenericFilter(
+                    title = "Material",
+                    items = listOf(
+                        "Cotton",
+                        "Silk",
+                        "Polyester",
+                        "Wool",
+                        "Linen",
+                        "Denim",
+                        "Leather"
+                    ),
+                    columns = 3,
+                    maxVisibleItems = 6
+                )
             }
 
             // categories
             item(
                 key = "Categories"
-            ){
-                CategoryFilter(
-                    categories = listOf("Tops", "Dresses", "Bottoms", "Outerwear", "Shoes", "Accessories")
+            ) {
+                GenericFilter(
+                    title = "Categories",
+                    items = listOf(
+                        "Tops",
+                        "Bottoms",
+                        "Dresses",
+                        "Outerwear",
+                        "Shoes",
+                        "Accessories",
+                        "Bags"
+                    ),
+                    columns = 3,
+                    maxVisibleItems = 6
                 )
             }
 
@@ -132,14 +159,43 @@ fun FilterContent(
                 key = "Colour"
             ) {
                 ColourFilter(
-                    colours = listOf("#000000", "#661112", "#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#00FFFF", "#FF00FF")
+                    colours = listOf(
+                        "#000000",
+                        "#661112",
+                        "#FF0000",
+                        "#00FF00",
+                        "#0000FF",
+                        "#FFFF00",
+                        "#00FFFF",
+                        "#FF00FF"
+                    )
                 )
             }
 
             // price
+            item(
+                key = "Price"
+            ) {
+                PriceRangeSlider(
+                    minPrice = 0f,
+                    maxPrice = 1000f,
+                    initialMinPrice = 100f,
+                    initialMaxPrice = 900f
+                ) {
+                    // Handle price range change
+                }
+            }
         }
 
         // apply button
+        CustomButton(
+            title = "Apply",
+            onClick = { /* Handle apply button click */ },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(54.dp)
+                .padding(horizontal = 16.dp),
+        )
     }
 }
 
@@ -196,122 +252,6 @@ fun SortByFilter() {
 }
 
 @Composable
-fun MaterialFilter(materials: List<String>) {
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 12.dp)
-            .fillMaxWidth(),
-    ) {
-        // title
-        Text(
-            text = "Material",
-            style = MaterialTheme.typography.titleMedium.copy(
-                fontSize = 15.sp,
-                lineHeight = 20.sp
-            ),
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // grid of materials
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 48.dp, max = 200.dp)
-        ) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                val maxItemsToShow = 6 // including the "more" button
-                val showMoreButton = materials.size > maxItemsToShow - 1
-
-                // Display items conditionally
-                items(if (showMoreButton) maxItemsToShow - 1 else materials.size) { index ->
-                    FilterItem(
-                        item = materials[index],
-                        isSelected = false
-                    ) { /* Handle item selection */ }
-                }
-
-                // Show "more" button if needed
-                if (showMoreButton) {
-                    item {
-                        FilterItem(
-                            item = "More",
-                            isSelected = true
-                        ) {
-                            // Handle "more" button click
-                            // Show more materials
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun CategoryFilter(categories: List<String>) {
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 12.dp)
-            .fillMaxWidth(),
-    ) {
-        // title
-        Text(
-            text = "Categories",
-            style = MaterialTheme.typography.titleMedium.copy(
-                fontSize = 15.sp,
-                lineHeight = 20.sp
-            ),
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // grid of materials
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 48.dp, max = 200.dp)
-        ) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                val maxItemsToShow = 6 // including the "more" button
-                val showMoreButton = categories.size > maxItemsToShow - 1
-
-                // Display items conditionally
-                items(if (showMoreButton) maxItemsToShow - 1 else categories.size) { index ->
-                    FilterItem(
-                        item = categories[index],
-                        isSelected = false
-                    ) { /* Handle item selection */ }
-                }
-
-                // Show "more" button if needed
-                if (showMoreButton) {
-                    item {
-                        FilterItem(
-                            item = "More",
-                            isSelected = true
-                        ) {
-                            // Handle "more" button click
-                            // Show more materials
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
 fun ColourFilter(colours: List<String>) {
     Column(
         modifier = Modifier
@@ -342,6 +282,50 @@ fun ColourFilter(colours: List<String>) {
                     activeColor = MaterialTheme.colorScheme.background
                 )
 
+            }
+        }
+    }
+}
+
+@Composable
+fun GenericFilter(
+    title: String,
+    items: List<String>,
+    columns: Int = 3,
+    maxVisibleItems: Int = 5
+) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 12.dp)
+            .fillMaxWidth()
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium.copy(fontSize = 15.sp, lineHeight = 20.sp)
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 48.dp, max = 200.dp)
+        ) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(columns),
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                val showMoreButton = items.size > maxVisibleItems - 1
+                items(if (showMoreButton) maxVisibleItems - 1 else items.size) { index ->
+                    FilterItem(
+                        item = items[index],
+                        isSelected = false
+                    ) { /* Handle item selection */ }
+                }
+                if (showMoreButton) {
+                    item { MoreButton(onItemSelected = { /* Handle "more" button click */ }) }
+                }
             }
         }
     }
